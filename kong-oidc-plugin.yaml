@@ -1,0 +1,35 @@
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: oidc
+config:
+  # access_token_header_as_bearer: "no"
+  access_token_header_name: X-Access-Token
+  bearer_only: "yes"
+  client_id: someconsumer
+  client_secret: somesecret
+  disable_access_token_header: "no"
+  disable_id_token_header: "no"
+  disable_userinfo_header: "no"
+  discovery: http://hydra-service:9000/.well-known/openid-configuration
+  filters: null
+  groups_claim: groups
+  id_token_header_name: X-ID-Token
+  ignore_auth_filters: ""
+  introspection_endpoint: http://hydra-service:9001/oauth2/introspect
+  introspection_endpoint_auth_method: null
+  logout_path: /logout
+  realm: kong
+  recovery_page_path: null
+  redirect_after_logout_uri: /
+  redirect_uri: http://example.com
+  response_type: token
+  revoke_tokens_on_logout: "no"
+  scope: openid
+  session_secret: null
+  ssl_verify: "no"
+  timeout: null
+  token_endpoint_auth_method: client_secret_post
+  unauth_action: auth
+  userinfo_header_name: X-USERINFO
+plugin: oidc

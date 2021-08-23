@@ -1,0 +1,36 @@
+_format_version: "1.1"
+
+services:
+# - name: web1
+#   url: http://192.168.1.1:9091
+#   routes:
+#   - name: web1
+#     paths:
+#     - /
+- name: hydrapublic
+  url: http://hydra-service.default.svc:9000
+  routes:
+  - name: hydrapublic
+    paths:
+    - /hydra
+- name: hydraadmin
+  url: http://hydra-service.default.svc:9001
+  routes:
+  - name: hydraadmin
+    paths:
+    - /hydraadmin
+- name: echo
+  url: http://echo-service.default.svc:80
+  plugins:
+  - name: oidc
+    config.client_id: someconsumer
+    config.client_secret: somesecret
+    config.discovery: http://hydra-service.default.svc:9000/.well-known/openid-configuration
+    config.introspection_endpoint: http://hydra-service.default.svc:9001/oauth2/introspect
+    config.redirect_uri: http://example.com
+    config.response_type: token
+    config.bearer_only: "yes"
+  routes:
+  - name: echo
+    paths:
+    - /echo

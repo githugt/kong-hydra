@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hydra-configmap
+  namespace: default
+data:
+  database_url: postgres://hydra:secret@hydradb-service:5432/hydra?sslmode=disable
+  hydra-database: hydra
+  self-issuer-url: http://127.0.0.1:9000/
+  consent-url: http://127.0.0.1:9020/consent
+  login-url: http://127.0.0.1:9020/login

@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hydra-migrations
+  namespace: default
+  labels: 
+    app: hydra-migrations
+# spec:
+#   containers:
+#   - name: hydra-migrations
+#     image: oryd/hydra:v1.8.5
+#     env:
+#       - name: DSN
+#         valueFrom:
+#           configMapKeyRef:
+#             name: hydradb-configmap
+#             key: database_url
+#     args: ["migrate", "sql", "--yes", "$(DSN)"]
+spec:
+  template:
+    spec:
+      containers:
+      - name: hydra-migrations
+        image: oryd/hydra:v1.8.5
+        env:
+          - name: DSN
+            valueFrom:
+              configMapKeyRef:
+                name: hydra-configmap
+                key: database_url
+        args: ["migrate", "sql", "--yes", "$(DSN)"]
+      restartPolicy: Never

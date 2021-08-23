@@ -1,0 +1,56 @@
+# Note that for a normal usecase, this needs to be a volume.
+# This isn't being set as a volume because we don't really care as much
+# if the data is persisted after the test.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hydradb-deployment
+  namespace: default
+  labels:
+    app: hydradb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hydradb
+  template:
+    metadata:
+      labels:
+        app: hydradb
+    spec:
+      containers:
+      - name: hydradb
+        image: postgres:9.6
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: hydra-secret
+              key: postgres-username
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: hydra-secret
+              key: postgres-password
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: hydra-configmap
+              key: hydra-database
+---
+# service
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: hydradb-service
+  namespace: default
+spec:
+  selector:
+    app: hydradb
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432

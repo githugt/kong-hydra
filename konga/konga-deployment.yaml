@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: konga-configmap
+  # namespace: konga
+data:
+  node-environment: development
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: konga-secret
+  # namespace: konga
+type: Opaque
+data:
+  token-secret: c29tZV9iYXNlNjRfc3RyaW5n
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: konga
+  name: konga
+  # namespace: konga
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: konga
+  template:
+    metadata:
+      labels:
+        app: konga
+    spec:
+      containers:
+      - name: konga
+        image: pantsel/konga
+        ports:
+        - containerPort: 1337
+        env:
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: konga-configmap
+              key: node-environment
+        - name: TOKEN_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: konga-secret
+              key: token-secret
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  # name: konga-service
+  name: konga-service
+  # namespace: konga
+  # labels:
+  #   app: konga
+spec:
+  selector:
+    app: konga
+  # type: LoadBalancer
+  # Removed it from LoadBalancer to ClusterIP
+  # The service type was set as NodePort in EKS by Abhishek
+  ports:
+    - port: 1337
+      name: konga
+      protocol: TCP
+      targetPort: 1337
+      # nodePort: 30003 # must always be between 30,000 - 32,767
+      # No node port since its a ClusterIP
+    # - port: 1337
+    #   name: kongahigh
+    #   protocol: TCP
+    #   targetPort: 1337
+      # nodePort: 30003 # must always be between 30,000 - 32,767
+      # No node port since its a ClusterIP

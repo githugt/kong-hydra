@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hydra
+  namespace: default
+  labels: 
+    app: hydra
+  # annotations:
+  #   "sidecar.jaegertracing.io/inject": "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hydra
+  template:
+    metadata:
+      labels:
+        app: hydra
+    spec:
+      containers:
+      - name: hydra
+        image: oryd/hydra:v1.8.5
+        ports:
+        - containerPort: 4444
+        - containerPort: 4445
+        env:
+        - name: SECRETS_SYSTEM
+          valueFrom:
+            secretKeyRef:
+              name: hydra-secret
+              key: db-encryption-key
+        - name: DSN
+          valueFrom:
+            configMapKeyRef:
+              name: hydra-configmap
+              key: database_url
+        - name: URLS_SELF_ISSUER
+          valueFrom:
+            configMapKeyRef:
+              name: hydra-configmap
+              key: self-issuer-url
+        - name: URLS_CONSENT
+          valueFrom:
+            configMapKeyRef:
+              name: hydra-configmap
+              key: consent-url
+        - name: URLS_LOGIN
+          valueFrom:
+            configMapKeyRef:
+              name: hydra-configmap
+              key: login-url
+        # - name: TRACING_PROVIDER
+        #   value: "jaeger"
+        # - name: TRACING_PROVIDERS_JAEGER_SAMPLING_SERVER_URL
+        #   value: "http://jaeger-agent:5778/sampling"
+        # - name: TRACING_PROVIDERS_JAEGER_LOCAL_AGENT_ADDRESS
+        #   value: "jaeger-agent:6831"
+        # - name: TRACING_PROVIDERS_JAEGER_SAMPLING_TYPE
+        #   value: const
+        # - name: TRACING_PROVIDERS_JAEGER_SAMPLING_VALUE
+        #   value: "1"
+        #To opt out of anonymized telemetry report, uncomment the below config
+        # - name: SQA_OPT_OUT
+        #   value: true
+        
+        # serve can be all, public admin. Refer to https://www.ory.sh/hydra/docs/configure-deploy
+        args: ["serve", "all", "--dangerous-force-http"]
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: hydra-service
+  namespace: default
+spec:
+  selector:
+    app: hydra
+  # type: LoadBalancer
+  # Removed it from LoadBalancer to ClusterIP
+  # The service type was set as NodePort in EKS by Abhishek
+  ports:
+    - protocol: TCP
+      port: 9000
+      targetPort: 4444
+      # nodePort: 30003 # must always be between 30,000 - 32,767
+      # No node port since its a ClusterIP
+      name: publicapi
+    - protocol: TCP
+      port: 9001
+      targetPort: 4445
+      # nodePort: 30004 # must always be between 30,000 - 32,767
+      # No node port since its a ClusterIP
+      name: adminapi
