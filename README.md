@@ -85,8 +85,8 @@ curl --location --request POST 'http://hydra-service:9001/clients' \
   "client_id": "someconsumer",
   "client_name": "consumerName",
   "client_secret": "somesecret",
-  "client_uri":"zestmoney.in",
-  "owner":"zestmoney.in",
+  "client_uri":"example.com",
+  "owner":"example.com",
   "grant_types": [
     "client_credentials"
   ],
