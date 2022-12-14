@@ -21,7 +21,8 @@ spec:
     spec:
       containers:
       - name: hydra-migrations
-        image: oryd/hydra:v1.8.5
+        # image: oryd/hydra:v1.8.5
+        image: oryd/hydra:v1.11.10
         env:
           - name: DSN
             valueFrom:

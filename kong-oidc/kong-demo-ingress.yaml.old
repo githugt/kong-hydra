@@ -4,47 +4,58 @@ metadata:
   name: demo
   annotations:
     konghq.com/strip-path: "true"
-    kubernetes.io/ingress.class: kong
+    # kubernetes.io/ingress.class: kong
 spec:
+  ingressClassName: kong
   rules:
   - http:
       paths:
       - path: /foo
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: echo
             port:
               number: 80
+      # example of service protected by an api-key
+      # - path: /bar
+      #   pathType: ImplementationSpecific
+      #   backend:
+      #     service:
+      #       name: api-key-echo
+      #       port:
+      #         number: 80
       - path: /auth
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: hydra-service
             port:
               number: 9000
       - path: /auth-admin
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: hydra-service
             port:
               number: 9001
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: konga-service
-            port:
-              number: 1337
+
       # - path: /
+      #   pathType: ImplementationSpecific
       #   backend:
-      #     serviceName: jaeger-query
-      #     servicePort: 80
-      # - path: /auth-admin
+      #     service:
+      #       name: konga-service
+      #       port:
+      #         number: 1337
+
+      # - path: /
+      #   pathType: ImplementationSpecific
       #   backend:
-      #     serviceName: hydra-service
-      #     servicePort: 9001
+      #     service:
+      #       name: jaeger-query
+      #       port:
+      #         number: 80
+
 # apiVersion: networking.k8s.io/v1beta1
 # kind: Ingress
 # metadata:

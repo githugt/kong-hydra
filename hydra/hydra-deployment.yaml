@@ -19,7 +19,8 @@ spec:
     spec:
       containers:
       - name: hydra
-        image: oryd/hydra:v1.8.5
+        # image: oryd/hydra:v1.8.5
+        image: oryd/hydra:v1.11.10
         ports:
         - containerPort: 4444
         - containerPort: 4445

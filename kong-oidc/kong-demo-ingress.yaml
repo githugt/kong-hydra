@@ -1,0 +1,188 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: demo
+  annotations:
+    konghq.com/strip-path: "true"
+    # kubernetes.io/ingress.class: kong
+    # nginx.ingress.kubernetes.io/rewrite-target: /$2
+    # kubernetes.io/ingress.class: kong
+spec:
+  ingressClassName: kong
+  rules:
+  - http:
+      paths:
+      - path: /foo
+        pathType: Prefix
+        backend:
+          service:
+            name: echo
+            port:
+              number: 80
+      - path: /auth
+        pathType: Prefix
+        backend:
+          service:
+            name: hydra-service
+            port:
+              number: 9000
+      - path: /auth-admin
+        pathType: Prefix
+        backend:
+          service:
+            name: hydra-service
+            port:
+              number: 9001
+
+
+
+
+
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: demo
+#   annotations:
+#     konghq.com/strip-path: "true"
+#     kubernetes.io/ingress.class: kong
+# spec:
+#   rules:
+#   - http:
+#       paths:
+#       - path: /foo
+#         backend:
+#           serviceName: echo
+#           servicePort: 80
+#       - path: /auth
+#         backend:
+#           serviceName: hydra-service
+#           servicePort: 9000
+#       - path: /auth-admin
+#         backend:
+#           serviceName: hydra-service
+#           servicePort: 9001
+#       - path: /
+#         backend:
+#           serviceName: konga-service
+#           servicePort: 1337
+#       # - path: /
+#       #   backend:
+#       #     serviceName: jaeger-query
+#       #     servicePort: 80
+#       # - path: /auth-admin
+#       #   backend:
+#       #     serviceName: hydra-service
+#       #     servicePort: 9001
+
+
+
+
+
+# apiVersion: networking.k8s.io/v1beta1
+# kind: Ingress
+# metadata:
+#   name: demo
+#   annotations:
+#     nginx.ingress.kubernetes.io/rewrite-target: /$2
+#     # kubernetes.io/ingress.class: kong
+# spec:
+#   rules:
+#   - http:
+#       paths:
+#       - path: /foo(/|$)(.*)
+#         backend:
+#           serviceName: echo
+#           servicePort: 80
+#       - path: /auth
+#         backend:
+#           serviceName: hydra-service
+#           servicePort: 9000
+#       # - path: /auth-admin
+#       #   backend:
+#       #     serviceName: hydra-service
+#       #     servicePort: 9001
+
+
+
+
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: demo
+#   annotations:
+#     konghq.com/strip-path: "true"
+#     # kubernetes.io/ingress.class: kong
+# spec:
+#   ingressClassName: kong
+#   rules:
+#   - http:
+#       paths:
+#       - path: /foo
+#         pathType: ImplementationSpecific
+#         backend:
+#           service:
+#             name: echo
+#             port:
+#               number: 80
+#       # example of service protected by an api-key
+#       # - path: /bar
+#       #   pathType: ImplementationSpecific
+#       #   backend:
+#       #     service:
+#       #       name: api-key-echo
+#       #       port:
+#       #         number: 80
+#       - path: /auth
+#         pathType: ImplementationSpecific
+#         backend:
+#           service:
+#             name: hydra-service
+#             port:
+#               number: 9000
+#       - path: /auth-admin
+#         pathType: ImplementationSpecific
+#         backend:
+#           service:
+#             name: hydra-service
+#             port:
+#               number: 9001
+
+#       # - path: /
+#       #   pathType: ImplementationSpecific
+#       #   backend:
+#       #     service:
+#       #       name: konga-service
+#       #       port:
+#       #         number: 1337
+
+#       # - path: /
+#       #   pathType: ImplementationSpecific
+#       #   backend:
+#       #     service:
+#       #       name: jaeger-query
+#       #       port:
+#       #         number: 80
+
+# # apiVersion: networking.k8s.io/v1beta1
+# # kind: Ingress
+# # metadata:
+# #   name: demo
+# #   annotations:
+# #     nginx.ingress.kubernetes.io/rewrite-target: /$2
+# #     # kubernetes.io/ingress.class: kong
+# # spec:
+# #   rules:
+# #   - http:
+# #       paths:
+# #       - path: /foo(/|$)(.*)
+# #         backend:
+# #           serviceName: echo
+# #           servicePort: 80
+# #       - path: /auth
+# #         backend:
+# #           serviceName: hydra-service
+# #           servicePort: 9000
+# #       # - path: /auth-admin
+# #       #   backend:
+# #       #     serviceName: hydra-service
+# #       #     servicePort: 9001
